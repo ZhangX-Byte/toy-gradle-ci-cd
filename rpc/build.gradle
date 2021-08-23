@@ -1,0 +1,48 @@
+plugins {
+    id 'java'
+    id 'idea'
+    id 'org.springframework.boot' version '2.5.4'
+    id "io.spring.dependency-management" version "1.0.11.RELEASE"
+}
+
+group 'com.toy'
+version '1.0.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation platform('io.grpc:grpc-bom:1.39.0')
+    implementation 'net.devh:grpc-spring-boot-starter:2.12.0.RELEASE'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    implementation project(':protobuf')
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    //添加此引用的原因是为了解决 spring boot 2.5.4 无法读取 nacos 配置的问题
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap:3.0.3'
+    implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery:2021.1'
+    implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config:2021.1'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
+    testImplementation 'io.grpc:grpc-testing'
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
+}
+
+bootBuildImage {
+    imageName = "harbor.xxx.com/rpc/${project.name}:${project.version}"
+    publish = true
+    docker {
+        publishRegistry {
+            username = "admin"
+            password = "admin"
+            url = "harbor.xxx.com"
+        }
+    }
+}
+
+test {
+    useJUnitPlatform()
+}

@@ -1,0 +1,53 @@
+plugins {
+    id 'java'
+    id 'idea'
+    id 'com.google.protobuf' version '0.8.17'
+    id 'maven-publish'
+}
+
+group 'com.toy'
+version '1.0.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly 'io.grpc:grpc-protobuf:1.39.0'
+    compileOnly 'io.grpc:grpc-stub:1.39.0'
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.17.3"
+    }
+    plugins {
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.39.0'
+        }
+    }
+
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {
+            }
+        }
+    }
+}
+
+publishing {
+    publications {
+        proto_package(MavenPublication) {
+        }
+    }
+    repositories {
+        maven {
+            allowInsecureProtocol = true
+            url '你的 Maven 仓库地址'
+            credentials {
+                username = 'Maven 账号'
+                password = 'Maven 密码'
+            }
+        }
+    }
+}

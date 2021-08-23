@@ -1,0 +1,4 @@
+rootProject.name = 'toy-gradle-gitlab-ci-cd'
+include 'rpc'
+include 'protobuf'
+
